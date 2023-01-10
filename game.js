@@ -3,10 +3,14 @@ let buttonColours = ["red", "blue", "green", "yellow"];
 let gamePattern = [];
 let userClickedPattern = [];
 let level = 0;
-
+let started = false;
 // listen to keyboard press
-$("html").one("keypress", function (event) {
-  nextSequence();
+$(document).keypress(function () {
+  if (!started) {
+    $("#level-title").text("Level " + level);
+    nextSequence();
+    started = true;
+  }
 });
 
 function playSound(color) {
@@ -74,6 +78,26 @@ function checkAnswer(currentLevel) {
       }, 1000);
     }
   } else {
+    // Game over
     console.log("wrong");
+    // play sound wrong
+    playSound("wrong");
+    // modify body colour to red
+    $("body").addClass("game-over");
+    setTimeout(function () {
+      $("body").removeClass("game-over");
+    }, 200);
+    // Change title to Gamve over
+    $("h1").text("Game Over, Press Any Key to Restart");
+    // call function
+    startOver();
   }
+}
+
+function startOver() {
+  // re-initialize everything
+  userClickedPattern.splice(0, userClickedPattern.length);
+  gamePattern.splice(0, gamePattern.length);
+  started = false;
+  level = 0;
 }
